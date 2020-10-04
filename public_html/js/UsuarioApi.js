@@ -37,22 +37,18 @@ function adicionarUsuario(objUsuario) {
     xhr.send(JSON.stringify(objUsuario));
 }
 
-function editarUsuario(codigo, objUsuario) {
-    // Update a user
-     var xhr = new XMLHttpRequest();
-   
-    xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
-    xhr.onload = function () {
-        var usuario = JSON.parse(xhr.responseText);
-        if (xhr.readyState == 4 && xhr.status == "200") {
-            console.table(usuario);
-            alert("Usuario atualizado")
-        } else {
-            console.error(usuario);
-        }
-         reloadThePage();
-    }
-    xhr.open("PUT", url+'/codigo='+codigo, true);
+function editarUsuario(objUsuario) {
+    var xhr = new XMLHttpRequest();
+
+    xhr.addEventListener("readystatechange", function () {
+        if (this.readyState === 4) {
+            var usuarios = JSON.parse(this.responseText);
+            getUsuarios();
+        }   
+    });
+
+    xhr.open("PUT", "http://localhost:8080");
+
     xhr.send(JSON.stringify(objUsuario));
 }
 
@@ -60,27 +56,21 @@ function editarUsuario(codigo, objUsuario) {
 
 
 
-function deletarUsuario(codigo) {
+function deleteUsuario(cod) {
+    var data = new FormData();
 
     var xhr = new XMLHttpRequest();
 
     xhr.addEventListener("readystatechange", function () {
-        var usuario = JSON.parse(this.responseText);
-        if (xhr.readyState == 4 && xhr.status == "200") {
-            console.table(usuario)
-            alert("Usuario deletado");
-        } else {
-            console.error(usuario);
+        if (this.readyState === 4) {
+            var usuarios = JSON.parse(this.responseText);
+            getUsuarios();
         }
-        reloadThePage()
     });
 
+    xhr.open("DELETE", "http://localhost:8080"+"?cod="+cod);
 
-    xhr.open("DELETE", url + '/codigo=' + codigo, true);
-    xhr.send(null);
-
-
-
+    xhr.send(data);
 }
 
 
